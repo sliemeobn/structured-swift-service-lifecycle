@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-service-lifecycle",
+    name: "structured-swift-service-lifecycle",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13),
