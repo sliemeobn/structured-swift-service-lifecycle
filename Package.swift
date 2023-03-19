@@ -49,7 +49,7 @@ let package = Package(
             name: "ServiceLifecycleTestKit",
             dependencies: [
                 .target(name: "ServiceLifecycle"),
-            ],
+            ]
         ),
         .target(
             name: "UnixSignals"
@@ -59,7 +59,7 @@ let package = Package(
             dependencies: [
                 .target(name: "ServiceLifecycle"),
                 .target(name: "ServiceLifecycleTestKit"),
-            ],
+            ]
         ),
         .testTarget(
             name: "UnixSignalsTests",
