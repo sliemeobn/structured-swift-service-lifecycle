@@ -11,6 +11,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the SwiftNIO open source project
+//
+// Copyright (c) 2017-2018 Apple Inc. and the SwiftNIO project authors
+// Licensed under Apache License v2.0
+//
+// See LICENSE.txt for license information
+// See CONTRIBUTORS.txt for the list of SwiftNIO project authors
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+//===----------------------------------------------------------------------===//
 
 /// Provides locked access to `Value`.
 ///
@@ -21,36 +34,21 @@
 /// accesses to a value using the lock. But it's easy to forget to actually
 /// acquire/release the lock in the correct place. ``LockedValueBox`` makes
 /// that much easier.
-struct LockedValueBox<Value> {
+public struct LockedValueBox<Value> {
     @usableFromInline
-    internal final class _Storage {
-        @usableFromInline
-        internal let _lock = Lock()
-
-        @usableFromInline
-        internal var _value: Value
-
-        internal init(_value value: Value) {
-            self._value = value
-        }
-    }
-
-    @usableFromInline
-    internal let _storage: _Storage
+    internal let _storage: LockStorage<Value>
 
     /// Initialize the `Value`.
-    init(_ value: Value) {
-        self._storage = _Storage(_value: value)
+    @inlinable
+    public init(_ value: Value) {
+        self._storage = .create(value: value)
     }
 
     /// Access the `Value`, allowing mutation of it.
     @inlinable
-    func withLockedValue<T>(_ mutate: (inout Value) throws -> T) rethrows -> T {
-        return try self._storage._lock.withLock {
-            try mutate(&self._storage._value)
-        }
+    public func withLockedValue<T>(_ mutate: (inout Value) throws -> T) rethrows -> T {
+        return try self._storage.withLockedValue(mutate)
     }
 }
 
 extension LockedValueBox: Sendable where Value: Sendable {}
-extension LockedValueBox._Storage: @unchecked Sendable {}

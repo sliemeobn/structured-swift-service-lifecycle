@@ -33,6 +33,10 @@ let package = Package(
             url: "https://github.com/apple/swift-docc-plugin",
             from: "1.0.0"
         ),
+        .package(
+            url: "https://github.com/apple/swift-async-algorithms",
+            from: "0.1.0"
+        ),
     ],
     targets: [
         .target(
@@ -42,7 +46,12 @@ let package = Package(
                     name: "Logging",
                     package: "swift-log"
                 ),
+                .product(
+                    name: "AsyncAlgorithms",
+                    package: "swift-async-algorithms"
+                ),
                 .target(name: "UnixSignals"),
+                .target(name: "ConcurrencyHelpers"),
             ]
         ),
         .target(
@@ -52,7 +61,13 @@ let package = Package(
             ]
         ),
         .target(
-            name: "UnixSignals"
+            name: "UnixSignals",
+            dependencies: [
+                .target(name: "ConcurrencyHelpers"),
+            ]
+        ),
+        .target(
+            name: "ConcurrencyHelpers"
         ),
         .testTarget(
             name: "ServiceLifecycleTests",
