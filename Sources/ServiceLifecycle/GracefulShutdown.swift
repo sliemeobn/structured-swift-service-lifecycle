@@ -17,7 +17,7 @@
 /// The operation executes on the calling execution context and does not suspend by itself, unless the code contained within the closure does.
 /// If graceful shutdown occurs while the operation is running, the graceful shutdown handler will execute concurrently with the operation.
 ///
-/// When `withShutdownGracefulHandler` is used in a Task that has already been gracefully shutdown, the `onGracefulShutdown` handler
+/// When `withGracefulShutdownHandler` is used in a Task that has already been gracefully shutdown, the `onGracefulShutdown` handler
 /// will be executed immediately before operation gets to execute. This allows the `onGracefulShutdown` handler to set some external “shutdown” flag
 /// that the operation may be atomically checking for in order to avoid performing any actual work once the operation gets to run.
 ///
@@ -27,9 +27,8 @@
 /// - Parameters:
 ///   - operation: The actual operation.
 ///   - handler: The handler which is invoked once graceful shutdown has been triggered.
-@_unsafeInheritExecutor
-public func withShutdownGracefulHandler<T>(
-    operation: () async throws -> T,
+public func withGracefulShutdownHandler<T>(
+    @_inheritActorContext operation: @Sendable () async throws -> T,
     onGracefulShutdown handler: @Sendable @escaping () -> Void
 ) async rethrows -> T {
     guard let gracefulShutdownManager = TaskLocals.gracefulShutdownManager else {
